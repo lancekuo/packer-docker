@@ -5,7 +5,7 @@
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
       "instance_type": "t2.small",
-      "region": "us-east-2",
+      "region": "us-east-1",
       "source_ami_filter": {
         "filters": {
           "name": "*ubuntu-yakkety-16.10-amd64-server-*",
@@ -17,8 +17,8 @@
       "tags": {
         "OS_Version": "Ubuntu",
         "Release": "16.10",
-        "Docker_Version": "ce_17.06.0",
-        "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.06.0~ce-0~ubuntu_amd64.deb",
+        "Docker_Version": "ce_17.06.2",
+        "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_17.06.2~ce-0~ubuntu_amd64.deb",
         "AWSCLI_Version": "1.11.116",
         "Packer_Version": "Packer v1.0.0",
         "DockerMachine_Version": "0.12",
@@ -26,9 +26,9 @@
         "Build_Date": "{{isotime \"2006-01-02 03:04:05 -0700\"}}"
       },
       "type": "amazon-ebs",
-      "security_group_ids": ["sg-d48f7ebd"],
+      "security_group_ids": ["sg-d4e1e7a9"],
       "ssh_username": "ubuntu",
-      "subnet_id": "subnet-fa16e293"
+      "subnet_id": "subnet-f4eabfbd"
     }
   ],
   "post-processors": null,
