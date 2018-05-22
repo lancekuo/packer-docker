@@ -1,0 +1,54 @@
+{
+    "provisioners": [
+        {
+            "destination": "/tmp/custom.conf",
+            "source": "../docker.options",
+            "type": "file"
+        },
+        {
+            "destination": "/usr/bin/role-setup",
+            "source": "nat-setup",
+            "type": "file"
+        },
+        {
+            "destination": "/usr/bin/ubuntu-harden",
+            "source": "ubuntu-harden.bash",
+            "type": "file"
+        },
+        {
+            "type": "shell",
+            "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
+            "inline": [
+                "chmod 755 /usr/bin/role-setup",
+                "chmod 755 /usr/bin/ubuntu-harden",
+                "apt-get -y update",
+                "apt-get -y install unzip libltdl7 unzip nfs-common cifs-utils",
+                "curl https://download.docker.com/linux/ubuntu/dists/xenial/pool/stable/amd64/docker-ce_18.03.1~ce-0~ubuntu_amd64.deb -o package.deb;sudo dpkg -i package.deb",
+                "curl -L https://github.com/docker/machine/releases/download/v0.14.0/docker-machine-`uname -s`-`uname -m` >/tmp/docker-machine && chmod +x /tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine",
+                "sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
+                "mkdir /etc/systemd/system/docker.service.d && sudo mv /tmp/custom.conf /etc/systemd/system/docker.service.d/",
+                "rm -rf package.deb"
+            ]
+        }
+    ],
+    "builders": [
+        {
+            "type": "softlayer",
+            "api_key": "APIKEY",
+            "username": "USERNAME_WITH_COMPANY_ID",
+            "datacenter_name": "tor01",
+            "base_os_code": "UBUNTU_16_64",
+            "image_name": "docker-base-{{isotime \"2006-01\"}}",
+            "image_description": "Docker CE 18.03.1 {{isotime \"2006-01-02 03:04:05\"}}",
+            "image_type": "standard",
+            "instance_name": "packer - {{isotime}}",
+            "instance_domain": "lancekuo.com",
+            "instance_cpu": 1,
+            "instance_memory": 1024,
+            "instance_network_speed": 10,
+            "ssh_port": 22,
+            "ssh_timeout": "15m",
+            "instance_state_timeout": "25m"
+        }
+    ]
+}

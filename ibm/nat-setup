@@ -1,0 +1,18 @@
+#!/bin/bash
+if [[ `hostname` =~ ^nat$ ]]; then
+	echo '#!/bin/sh
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -s 10.0.0.0/8 -o eth1 -j MASQUERADE
+ufw disable
+' | sudo tee /etc/network/if-pre-up.d/nat-setup
+        sudo chmod +x /etc/network/if-pre-up.d/nat-setup
+        sudo /etc/network/if-pre-up.d/nat-setup
+else
+        gw=$1
+        echo "#!/bin/sh -e
+ip route replace default via $gw
+exit 0
+" | sudo tee /etc/rc.local
+        sudo chmod +x /etc/rc.local
+        sudo /etc/rc.local
+fi
