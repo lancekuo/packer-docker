@@ -38,17 +38,18 @@
             "username": "USERNAME_WITH_COMPANY_ID",
             "datacenter_name": "tor01",
             "base_os_code": "UBUNTU_16_64",
-            "image_name": "docker-base-{{isotime \"2006-01\"}}",
+            "datacenter_name": "tor01",
             "image_description": "Docker CE 18.03.1 {{isotime \"2006-01-02 03:04:05\"}}",
+            "image_name": "docker-base-{{isotime \"2006-01\"}}",
             "image_type": "standard",
-            "instance_name": "packer - {{isotime}}",
-            "instance_domain": "lancekuo.com",
             "instance_cpu": 1,
+            "instance_domain": "lancekuo.com",
             "instance_memory": 1024,
+            "instance_name": "packer - {{isotime}}",
             "instance_network_speed": 10,
+            "instance_state_timeout": "25m",
             "ssh_port": 22,
-            "ssh_timeout": "15m",
-            "instance_state_timeout": "25m"
+            "ssh_timeout": "15m"
         }
     ]
 }
