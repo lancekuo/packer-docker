@@ -43,6 +43,7 @@
             "image_name": "docker-base-{{isotime \"2006-01\"}}",
             "image_type": "standard",
             "instance_cpu": 1,
+            "instance_disk_capacities": [100],
             "instance_domain": "lancekuo.com",
             "instance_memory": 1024,
             "instance_name": "packer - {{isotime}}",
