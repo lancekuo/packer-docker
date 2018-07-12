@@ -19,6 +19,7 @@
             "type": "shell",
             "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
             "inline": [
+                "ssh-keyscan github.com > ~/.ssh/known_hosts",
                 "chmod 755 /usr/bin/role-setup",
                 "chmod 755 /usr/bin/ubuntu-harden",
                 "apt-get -y update",

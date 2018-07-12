@@ -8,6 +8,8 @@ usermod -aG docker $u
 mkdir /home/$u/.ssh
 chmod 700 /home/$u/.ssh
 cp ~/.ssh/authorized_keys /home/$u/.ssh/
+cp ~/.ssh/known_hosts /home/$u/.ssh/
+if [ -f /root/.ssh/gitmirror_id_rsa ]; then mv /root/.ssh/gitmirror_id_rsa /home/$u/.ssh/id_rsa;chmod 600 /home/$u/.ssh/id_rsa; fi;
 chmod 600 /home/$u/.ssh/authorized_keys
 chown -R $u:$u /home/$u/.ssh
 echo "$u ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/10-$u
