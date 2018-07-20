@@ -44,6 +44,7 @@
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
         "sudo mkdir /etc/systemd/system/docker.service.d && sudo mv /tmp/custom.conf /etc/systemd/system/docker.service.d/",
+        "sudo systemctl disable apt-daily.timer",
         "apt-get -y update",
         "apt-get -y install unzip libltdl7",
         "sudo ln -s /usr/bin/python3 /usr/bin/python",
