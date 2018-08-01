@@ -46,7 +46,7 @@
         "apt-get -y update",
         "apt-get -y install unzip libltdl7 s3fs python3-distutils",
         "sudo ln -s /usr/bin/python3 /usr/bin/python",
-        "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws",
+        "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
         "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.0~ce~3-0~ubuntu_amd64.deb -o package.deb;sudo dpkg -i package.deb",
         "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
         "usermod -aG docker ubuntu",
