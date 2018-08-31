@@ -1,11 +1,19 @@
 {
+  "min_packer_version": "1.2.5",
   "builders": [
     {
+      "type": "amazon-ebs",
       "ami_name": "docker {{timestamp}}",
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
       "instance_type": "t2.micro",
       "region": "ca-central-1",
+      "run_tags": {
+        "Name": "__PLAYGROUND___________"
+      },
+      "security_group_ids": ["sg-fbc5be93"],
+      "ssh_username": "ubuntu",
+      "subnet_id": "subnet-3b3d0740",
       "source_ami_filter": {
         "filters": {
           "name": "*ubuntu-bionic-18.04-amd64-server*",
@@ -15,20 +23,15 @@
         "most_recent": true
       },
       "tags": {
-        "OS_Version": "Ubuntu",
-        "Release": "ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20180724",
-        "Docker_Version": "ce_18.06.0",
-        "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.0~ce~3-0~ubuntu_amd64.deb",
-        "AWSCLI_Version": "1.15.68",
-        "Packer_Version": "1.2.0",
-        "DockerCompose_Version": "1.22.0",
+        "AWSCLI_Version": "1.16.5",
+        "Base_AMI_Id": "{{ .SourceAMI }}",
+        "Base_AMI_Name": "{{ .SourceAMIName }}",
         "Build_Date": "{{isotime \"2006-01-02 03:04:05\"}}",
+        "Docker_Compose_Version": "1.22.0",
+        "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb",
+        "Docker_Version": "ce_18.06.1",
         "Name": "Docker-Base"
-      },
-      "type": "amazon-ebs",
-      "security_group_ids": ["sg-fbc5be93"],
-      "ssh_username": "ubuntu",
-      "subnet_id": "subnet-3b3d0740"
+      }
     }
   ],
   "post-processors": null,
@@ -41,14 +44,18 @@
     {
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
+        "sudo sed -i '/APT::Periodic::Update-Package-Lists \"1\";/d' /etc/apt/apt.conf.d/20auto-upgrades",
+        "sudo sed -i '/APT::Periodic::Unattended-Upgrade \"1\";/d' /etc/apt/apt.conf.d/20auto-upgrades",
+        "sudo sed -i 'a APT::Periodic::Update-Package-Lists \"0\";' /etc/apt/apt.conf.d/20auto-upgrades",
+        "sudo sed -i 'a APT::Periodic::Unattended-Upgrade \"0\";' /etc/apt/apt.conf.d/20auto-upgrades",
         "sudo mkdir /etc/systemd/system/docker.service.d && sudo mv /tmp/custom.conf /etc/systemd/system/docker.service.d/",
         "sudo systemctl disable apt-daily.timer",
         "sudo apt-get -y update",
-        "sudo apt-get -y install unzip libltdl7 s3fs python3-distutils",
+        "sudo apt-get -y install unzip libltdl7 s3fs jq python3-distutils",
         "sudo apt-get clean",
         "sudo ln -s /usr/bin/python3 /usr/bin/python",
         "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
-        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.0~ce~3-0~ubuntu_amd64.deb -o package.deb;sudo dpkg -i package.deb",
+        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb -o package.deb;sudo dpkg -i package.deb",
         "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
         "usermod -aG docker ubuntu",
         "rm -rf awscli-bundle* package.deb"
