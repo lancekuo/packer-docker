@@ -26,12 +26,13 @@
         "AWSCLI_Version": "1.16.5",
         "Base_AMI_Id": "{{ .SourceAMI }}",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
-        "Build_Date": "{{isotime \"2006-01-02 03:04:05\"}}",
+        "Build_Date": "{{isotime \"2006-01-02 15-04-05\"}}",
         "Cloud_Init_Disk": "/dev/xvdg",
         "Docker_Compose_Version": "1.22.0",
         "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb",
         "Docker_Version": "ce_18.06.1",
-        "Name": "Docker-Base"
+        "Name": "Docker-Base",
+        "Packer_Version": "{{packer_version}}"
       }
     }
   ],
