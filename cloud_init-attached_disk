@@ -1,0 +1,10 @@
+mounts:
+- [LABEL=external, /mnt/ext,"ext4","defaults,nofail,comment=SSD", "0", "0"]
+
+fs_setup:
+ - label: external
+   filesystem: 'ext4'
+   device: '/dev/xvdg'
+   partition: auto
+runcmd:
+ - /bin/bash -c 'echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > /home/ubuntu/.ssh/config'

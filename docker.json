@@ -27,6 +27,7 @@
         "Base_AMI_Id": "{{ .SourceAMI }}",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "Build_Date": "{{isotime \"2006-01-02 03:04:05\"}}",
+        "Cloud_Init_Disk": "/dev/xvdg",
         "Docker_Compose_Version": "1.22.0",
         "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb",
         "Docker_Version": "ce_18.06.1",
@@ -40,6 +41,10 @@
       "destination": "/tmp/custom.conf",
       "source": "docker.options",
       "type": "file"
+    },{
+        "destination": "/tmp/disk",
+        "source": "cloud_init-attached_disk",
+        "type": "file"
     },
     {
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
@@ -49,6 +54,7 @@
         "sudo sed -i 'a APT::Periodic::Update-Package-Lists \"0\";' /etc/apt/apt.conf.d/20auto-upgrades",
         "sudo sed -i 'a APT::Periodic::Unattended-Upgrade \"0\";' /etc/apt/apt.conf.d/20auto-upgrades",
         "sudo mkdir /etc/systemd/system/docker.service.d && sudo mv /tmp/custom.conf /etc/systemd/system/docker.service.d/",
+        "sudo mv /tmp/disk /etc/cloud/cloud.cfg.d/95_attached_disk.cfg",
         "sudo systemctl disable apt-daily.timer",
         "sudo apt-get -y update",
         "sudo apt-get -y install unzip libltdl7 s3fs jq python3-distutils",
