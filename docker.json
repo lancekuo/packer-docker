@@ -3,7 +3,7 @@
   "builders": [
     {
       "type": "amazon-ebs",
-      "ami_name": "docker {{timestamp}}",
+      "ami_name": "docker-base-{{timestamp}}",
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
       "instance_type": "t2.micro",
@@ -23,7 +23,7 @@
         "most_recent": true
       },
       "tags": {
-        "AWSCLI_Version": "1.16.5",
+        "AWSCLI_Version": "1.16.15",
         "Base_AMI_Id": "{{ .SourceAMI }}",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "Build_Date": "{{isotime \"2006-01-02 15-04-05\"}}",
@@ -31,7 +31,7 @@
         "Docker_Compose_Version": "1.22.0",
         "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb",
         "Docker_Version": "ce_18.06.1",
-        "Name": "Docker-Base",
+        "Name": "brick",
         "Packer_Version": "{{packer_version}}"
       }
     }
