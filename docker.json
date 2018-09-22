@@ -1,4 +1,10 @@
 {
+  "variables": {
+    "instance_type" : "t2.micro",
+    "region"        : "ca-central-1",
+    "username"      : "ubuntu",
+    "ami_name"      : "brick"
+  },
   "min_packer_version": "1.2.5",
   "builders": [
     {
@@ -6,14 +12,12 @@
       "ami_name": "docker-base-{{timestamp}}",
       "ami_virtualization_type": "hvm",
       "associate_public_ip_address": "true",
-      "instance_type": "t2.micro",
-      "region": "ca-central-1",
+      "instance_type": "{{user `instance_type`}}",
+      "region": "{{user `region`}}",
       "run_tags": {
         "Name": "__PLAYGROUND___________"
       },
-      "security_group_ids": ["sg-fbc5be93"],
-      "ssh_username": "ubuntu",
-      "subnet_id": "subnet-3b3d0740",
+      "ssh_username": "{{user `username`}}",
       "source_ami_filter": {
         "filters": {
           "name": "*ubuntu-bionic-18.04-amd64-server*",
@@ -23,7 +27,7 @@
         "most_recent": true
       },
       "tags": {
-        "AWSCLI_Version": "1.16.15",
+        "AWSCLI_Version": "1.16.19",
         "Base_AMI_Id": "{{ .SourceAMI }}",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "Build_Date": "{{isotime \"2006-01-02 15-04-05\"}}",
@@ -31,7 +35,7 @@
         "Docker_Compose_Version": "1.22.0",
         "Docker_Url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb",
         "Docker_Version": "ce_18.06.1",
-        "Name": "brick",
+        "Name": "{{user `ami_name`}}",
         "Packer_Version": "{{packer_version}}"
       }
     }
@@ -39,15 +43,16 @@
   "post-processors": null,
   "provisioners": [
     {
+      "type": "file",
       "destination": "/tmp/custom.conf",
-      "source": "docker.options",
-      "type": "file"
+      "source": "docker.options"
     },{
-        "destination": "/tmp/disk",
-        "source": "cloud_init-attached_disk",
-        "type": "file"
+      "type": "file",
+      "destination": "/tmp/disk",
+      "source": "cloud_init-attached_disk"
     },
     {
+      "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
         "sudo sed -i '/APT::Periodic::Update-Package-Lists \"1\";/d' /etc/apt/apt.conf.d/20auto-upgrades",
@@ -66,8 +71,7 @@
         "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
         "usermod -aG docker ubuntu",
         "rm -rf awscli-bundle* package.deb"
-      ],
-      "type": "shell"
+      ]
     }
   ]
 }
