@@ -56,6 +56,7 @@
       "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
+        "sudo ln -sf /usr/share/zoneinfo/America/Toronto /etc/localtime",
         "sudo sed -i '/APT::Periodic::Update-Package-Lists \"1\";/d' /etc/apt/apt.conf.d/20auto-upgrades",
         "sudo sed -i '/APT::Periodic::Unattended-Upgrade \"1\";/d' /etc/apt/apt.conf.d/20auto-upgrades",
         "sudo sed -i 'a APT::Periodic::Update-Package-Lists \"0\";' /etc/apt/apt.conf.d/20auto-upgrades",
