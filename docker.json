@@ -5,9 +5,10 @@
     "username"      : "ubuntu",
     "ami_name"      : "brick"
   },
-  "min_packer_version": "1.2.5",
+  "min_packer_version": "1.4.3",
   "builders": [
     {
+      "region": "{{user `region`}}",
       "type": "amazon-ebs",
       "ami_name": "docker-base-{{timestamp}}",
       "ami_virtualization_type": "hvm",
@@ -33,11 +34,11 @@
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "Build_Date": "{{isotime \"2006-01-02 15-04-05\"}}",
         "Cloud_Init_Disk": "/dev/xvdg",
-        "Docker_Compose_Version": "1.23.2",
-        "docker_containerd_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.2-1_amd64.deb",
-        "docker_cli_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_18.09.1~3-0~ubuntu-bionic_amd64.deb",
-        "docker_ce_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.09.1~3-0~ubuntu-bionic_amd64.deb",
-        "Docker_Version": "ce_18.09.1",
+        "Docker_Compose_Version": "1.24.1",
+        "docker_containerd_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.6-3_amd64.deb",
+        "docker_cli_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_19.03.2~3-0~ubuntu-bionic_amd64.deb",
+        "docker_ce_url" : "https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.2~3-0~ubuntu-bionic_amd64.deb",
+        "Docker_Version": "ce_19.03.2",
         "Name": "{{user `ami_name`}}",
         "Packer_Version": "{{packer_version}}"
       }
@@ -56,6 +57,10 @@
     },
     {
       "type": "shell",
+      "inline": ["/usr/bin/cloud-init status --wait"]
+    },
+    {
+      "type": "shell",
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
         "sudo ln -sf /usr/share/zoneinfo/America/Toronto /etc/localtime",
@@ -67,14 +72,15 @@
         "sudo mv /tmp/disk /etc/cloud/cloud.cfg.d/95_attached_disk.cfg",
         "sudo systemctl disable apt-daily.timer",
         "sudo apt-get -y update",
+        "sudo apt-get -y upgrade",
         "sudo apt-get -y install unzip libltdl7 s3fs jq python3-distutils",
         "sudo apt-get clean",
         "sudo ln -s /usr/bin/python3 /usr/bin/python",
         "curl 'https://s3.amazonaws.com/aws-cli/awscli-bundle.zip' -o 'awscli-bundle.zip';unzip awscli-bundle.zip;./awscli-bundle/install -b ~/bin/aws",
-        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.2-1_amd64.deb -o package0.deb;sudo dpkg -i package0.deb",
-        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_18.09.1~3-0~ubuntu-bionic_amd64.deb -o package1.deb;sudo dpkg -i package1.deb",
-        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.09.1~3-0~ubuntu-bionic_amd64.deb -o package2.deb;sudo dpkg -i package2.deb",
-        "sudo curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
+        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.6-3_amd64.deb -o package0.deb;sudo dpkg -i package0.deb",
+        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_19.03.2~3-0~ubuntu-bionic_amd64.deb -o package1.deb;sudo dpkg -i package1.deb",
+        "curl https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.2~3-0~ubuntu-bionic_amd64.deb -o package2.deb;sudo dpkg -i package2.deb",
+        "sudo curl -L https://github.com/docker/compose/releases/download/1.24.1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose",
         "usermod -aG docker ubuntu",
         "rm -rf awscli-bundle* package*.deb"
       ]
